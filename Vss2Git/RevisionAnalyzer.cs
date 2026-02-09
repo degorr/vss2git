@@ -28,12 +28,7 @@ namespace Hpdi.Vss2Git
     /// <author>Trevor Robinson</author>
     class RevisionAnalyzer : Worker
     {
-        private string excludeFiles;
-        public string ExcludeFiles
-        {
-            get { return excludeFiles; }
-            set { excludeFiles = value; }
-        }
+        public string ExcludeFiles { get; set; }
 
         private readonly VssDatabase database;
         public VssDatabase Database
@@ -109,9 +104,9 @@ namespace Hpdi.Vss2Git
             rootProjects.AddLast(project);
 
             PathMatcher exclusionMatcher = null;
-            if (!string.IsNullOrEmpty(excludeFiles))
+            if (!string.IsNullOrEmpty(ExcludeFiles))
             {
-                var excludeFileArray = excludeFiles.Split(
+                var excludeFileArray = ExcludeFiles.Split(
                     new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 exclusionMatcher = new PathMatcher(excludeFileArray);
             }
@@ -122,7 +117,7 @@ namespace Hpdi.Vss2Git
                 LogStatus(work, "Building revision list");
 
                 logger.WriteLine("Root project: {0}", project.Path);
-                logger.WriteLine("Excluded files: {0}", excludeFiles);
+                logger.WriteLine("Excluded files: {0}", ExcludeFiles);
 
                 int excludedProjects = 0;
                 int excludedFiles = 0;
@@ -174,7 +169,7 @@ namespace Hpdi.Vss2Git
                 stopwatch.Stop();
 
                 logger.WriteSectionSeparator();
-                logger.WriteLine("Analysis complete in {0:HH:mm:ss}", new DateTime(stopwatch.ElapsedTicks));
+                logger.WriteLine("Analysis complete in {0:HH:mm:ss}", new DateTime(stopwatch.ElapsedTicks, DateTimeKind.Unspecified));
                 logger.WriteLine("Projects: {0} ({1} excluded)", projectCount, excludedProjects);
                 logger.WriteLine("Files: {0} ({1} excluded)", fileCount, excludedFiles);
                 logger.WriteLine("Revisions: {0}", revisionCount);

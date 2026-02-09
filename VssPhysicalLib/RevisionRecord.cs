@@ -152,7 +152,6 @@ namespace Hpdi.VssPhysicalLib
     public class DestroyRevisionRecord : RevisionRecord
     {
         VssName name;
-        short unkShort;
         string physical;
 
         public VssName Name { get { return name; } }
@@ -163,7 +162,7 @@ namespace Hpdi.VssPhysicalLib
             base.Read(reader, header);
 
             name = reader.ReadName();
-            unkShort = reader.ReadInt16(); // 0 or 1
+            reader.ReadInt16(); // 0 or 1
             physical = reader.ReadString(10);
         }
 
@@ -237,7 +236,6 @@ namespace Hpdi.VssPhysicalLib
         VssName name;
         short unpinnedRevision; // -1: shared, 0: pinned; >0 unpinned version
         short pinnedRevision; // >0: pinned version, ==0 unpinned
-        short unkShort;
         string physical;
 
         public string ProjectPath { get { return projectPath; } }
@@ -254,7 +252,7 @@ namespace Hpdi.VssPhysicalLib
             name = reader.ReadName();
             unpinnedRevision = reader.ReadInt16();
             pinnedRevision = reader.ReadInt16();
-            unkShort = reader.ReadInt16(); // often seems to increment
+            reader.ReadInt16(); // often seems to increment
             physical = reader.ReadString(10);
         }
 

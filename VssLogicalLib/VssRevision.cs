@@ -64,7 +64,7 @@ namespace Hpdi.VssLogicalLib
             get { return comment != null ? comment.Comment : null; }
         }
 
-        internal VssRevision(VssItem item, RevisionRecord revision, CommentRecord comment)
+        private protected VssRevision(VssItem item, RevisionRecord revision, CommentRecord comment)
         {
             this.item = item;
             this.action = CreateAction(revision, item);

@@ -28,8 +28,6 @@ namespace Hpdi.Vss2Git
         public const string AnyNamePattern = "*";
         public const string AnyNameCharPattern = "?";
 
-        private static readonly char[] directorySeparators = { '/', '\\' };
-
         private readonly Regex regex;
 
         public PathMatcher(string pattern)

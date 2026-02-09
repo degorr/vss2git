@@ -100,7 +100,7 @@ namespace Hpdi.VssPhysicalLib
             return false;
         }
 
-        protected delegate T CreateRecordCallback<T>(
+        protected delegate T CreateRecordCallback<out T>(
             RecordHeader recordHeader, BufferReader recordReader);
 
         protected T GetRecord<T>(

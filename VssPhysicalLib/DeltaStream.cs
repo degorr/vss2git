@@ -26,8 +26,8 @@ namespace Hpdi.VssPhysicalLib
     /// <author>Trevor Robinson</author>
     public class DeltaStream : Stream
     {
-        private Stream baseStream;
-        private DeltaSimulator simulator;
+        private readonly Stream baseStream;
+        private readonly DeltaSimulator simulator;
         private int length = -1;
 
         public DeltaStream(Stream stream, IEnumerable<DeltaOperation> operations)

@@ -99,7 +99,7 @@ namespace Hpdi.VssLogicalLib
             return new VssProjectRevision(this, revision, comment);
         }
 
-        private class VssProjects : IEnumerable<VssProject>
+        private sealed class VssProjects : IEnumerable<VssProject>
         {
             private readonly VssProject project;
 
@@ -119,7 +119,7 @@ namespace Hpdi.VssLogicalLib
             }
         }
 
-        private class VssFiles : IEnumerable<VssFile>
+        private sealed class VssFiles : IEnumerable<VssFile>
         {
             private readonly VssProject project;
 
@@ -148,7 +148,7 @@ namespace Hpdi.VssLogicalLib
             Any = Project | File
         }
 
-        private class VssItemEnumerator<T> : IEnumerator<T>
+        private sealed class VssItemEnumerator<T> : IEnumerator<T>
             where T : VssItem
         {
             private readonly VssProject project;

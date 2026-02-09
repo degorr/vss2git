@@ -32,46 +32,22 @@ namespace Hpdi.Vss2Git
     /// <author>Trevor Robinson</author>
     class GitExporter : Worker
     {
+        private const string RevisionLogFormat = "{0}: {1} {2}";
         private readonly VssDatabase database;
         private readonly RevisionAnalyzer revisionAnalyzer;
         private readonly ChangesetBuilder changesetBuilder;
         private readonly StreamCopier streamCopier = new StreamCopier();
         private readonly HashSet<string> tagsUsed = new HashSet<string>();
-        private bool ignoreErrors = false;
-        private string defaultComment = "";
 
-        private string emailDomain = "localhost";
-        public string EmailDomain
-        {
-            get { return emailDomain; }
-            set { emailDomain = value; }
-        }
+        public string EmailDomain { get; set; } = "localhost";
 
-        private Encoding commitEncoding = Encoding.UTF8;
-        public Encoding CommitEncoding
-        {
-            get { return commitEncoding; }
-            set { commitEncoding = value; }
-        }
+        public Encoding CommitEncoding { get; set; } = Encoding.UTF8;
 
-        private bool forceAnnotatedTags = true;
-        public bool ForceAnnotatedTags
-        {
-            get { return forceAnnotatedTags; }
-            set { forceAnnotatedTags = value; }
-        }
+        public bool ForceAnnotatedTags { get; set; } = true;
 
-        public bool IgnoreErrors
-        {
-            get { return ignoreErrors; }
-            set { ignoreErrors = value; }
-        }
+        public bool IgnoreErrors { get; set; } = false;
 
-        public string DefaultComment
-        {
-            get { return defaultComment; }
-            set { defaultComment = value; }
-        }
+        public string DefaultComment { get; set; } = "";
 
         public GitExporter(WorkQueue workQueue, Logger logger,
             RevisionAnalyzer revisionAnalyzer, ChangesetBuilder changesetBuilder)
@@ -98,7 +74,7 @@ namespace Hpdi.Vss2Git
                 }
 
                 var git = new GitWrapper(repoPath, logger);
-                git.CommitEncoding = commitEncoding;
+                git.CommitEncoding = CommitEncoding;
 
                 while (!git.FindExecutable())
                 {
@@ -118,11 +94,11 @@ namespace Hpdi.Vss2Git
                     return;
                 }
 
-                if (commitEncoding.WebName != "utf-8")
+                if (CommitEncoding.WebName != "utf-8")
                 {
                     AbortRetryIgnore(delegate
                     {
-                        git.SetConfig("i18n.commitencoding", commitEncoding.WebName);
+                        git.SetConfig("i18n.commitencoding", CommitEncoding.WebName);
                     });
                 }
 
@@ -207,10 +183,10 @@ namespace Hpdi.Vss2Git
                                 }
                                 LogStatus(work, tagMessage);
 
-                                // annotated tags require (and are implied by) a tag message;
+                                // annotated tags require (and are implied by) a tag message
                                 // tools like Mercurial's git converter only import annotated tags
                                 var tagComment = label.Comment;
-                                if (string.IsNullOrEmpty(tagComment) && forceAnnotatedTags)
+                                if (string.IsNullOrEmpty(tagComment) && ForceAnnotatedTags)
                                 {
                                     // use the original VSS label as the tag message if none was provided
                                     tagComment = labelName;
@@ -235,9 +211,9 @@ namespace Hpdi.Vss2Git
                 stopwatch.Stop();
 
                 logger.WriteSectionSeparator();
-                logger.WriteLine("Git export complete in {0:HH:mm:ss}", new DateTime(stopwatch.ElapsedTicks));
-                logger.WriteLine("Replay time: {0:HH:mm:ss}", new DateTime(replayStopwatch.ElapsedTicks));
-                logger.WriteLine("Git time: {0:HH:mm:ss}", new DateTime(git.ElapsedTime.Ticks));
+                logger.WriteLine("Git export complete in {0:HH:mm:ss}", new DateTime(stopwatch.ElapsedTicks, DateTimeKind.Unspecified));
+                logger.WriteLine("Replay time: {0:HH:mm:ss}", new DateTime(replayStopwatch.ElapsedTicks, DateTimeKind.Unspecified));
+                logger.WriteLine("Git time: {0:HH:mm:ss}", new DateTime(git.ElapsedTime.Ticks, DateTimeKind.Unspecified));
                 logger.WriteLine("Git commits: {0}", commitCount);
                 logger.WriteLine("Git tags: {0}", tagCount);
             });
@@ -273,7 +249,6 @@ namespace Hpdi.Vss2Git
                 // null if a project was moved and its original location was
                 // subsequently destroyed
                 var project = revision.Item;
-                var projectName = project.LogicalName;
                 var projectPath = pathMapper.GetProjectPath(project.PhysicalName);
                 var projectDesc = projectPath;
                 if (projectPath == null)
@@ -311,13 +286,13 @@ namespace Hpdi.Vss2Git
 
                     case VssActionType.Add:
                     case VssActionType.Share:
-                        logger.WriteLine("{0}: {1} {2}", projectDesc, actionType, target.LogicalName);
+                        logger.WriteLine(RevisionLogFormat, projectDesc, actionType, target.LogicalName);
                         itemInfo = pathMapper.AddItem(project, target);
                         isAddAction = true;
                         break;
 
                     case VssActionType.Recover:
-                        logger.WriteLine("{0}: {1} {2}", projectDesc, actionType, target.LogicalName);
+                        logger.WriteLine(RevisionLogFormat, projectDesc, actionType, target.LogicalName);
                         itemInfo = pathMapper.RecoverItem(project, target);
                         isAddAction = true;
                         break;
@@ -325,7 +300,7 @@ namespace Hpdi.Vss2Git
                     case VssActionType.Delete:
                     case VssActionType.Destroy:
                         {
-                            logger.WriteLine("{0}: {1} {2}", projectDesc, actionType, target.LogicalName);
+                            logger.WriteLine(RevisionLogFormat, projectDesc, actionType, target.LogicalName);
                             itemInfo = pathMapper.DeleteItem(project, target);
                             if (targetPath != null && !itemInfo.Destroyed)
                             {
@@ -471,7 +446,7 @@ namespace Hpdi.Vss2Git
                     case VssActionType.Branch:
                         {
                             var branchAction = (VssBranchAction)revision.Action;
-                            logger.WriteLine("{0}: {1} {2}", projectDesc, actionType, target.LogicalName);
+                            logger.WriteLine(RevisionLogFormat, projectDesc, actionType, target.LogicalName);
                             itemInfo = pathMapper.BranchFile(project, target, branchAction.Source);
                             // branching within the project might happen after branching of the file
                             writeFile = true;
@@ -611,7 +586,7 @@ namespace Hpdi.Vss2Git
 
                     message += "\nSee log file for more information.";
 
-                    if (ignoreErrors)
+                    if (IgnoreErrors)
                     {
                         retry = false;
                         continue;
@@ -639,7 +614,7 @@ namespace Hpdi.Vss2Git
         private string GetEmail(string user)
         {
             // TODO: user-defined mapping of user names to email addresses
-            return user.ToLower().Replace(' ', '.') + "@" + emailDomain;
+            return user.ToLower().Replace(' ', '.') + "@" + EmailDomain;
         }
 
         private string GetTagFromLabel(string label)
@@ -652,11 +627,11 @@ namespace Hpdi.Vss2Git
             // global uniqueness by appending a number; since the file system
             // may be case-insensitive, ignore case when hashing tags
             var tag = baseTag;
-            for (int i = 2; !tagsUsed.Add(tag.ToUpperInvariant()); ++i)
+            var i = 2;
+            while (!tagsUsed.Add(tag.ToUpperInvariant()))
             {
                 tag = baseTag + "-" + i;
             }
-
             return tag;
         }
 

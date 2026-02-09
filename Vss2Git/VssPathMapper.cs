@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
+using Hpdi.VssLogicalLib;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
-using Hpdi.VssLogicalLib;
+using System.Linq;
 
 namespace Hpdi.Vss2Git
 {
@@ -28,30 +28,14 @@ namespace Hpdi.Vss2Git
     /// <author>Trevor Robinson</author>
     class VssItemInfo
     {
-        private readonly string physicalName;
-        public string PhysicalName
-        {
-            get { return physicalName; }
-        }
-
-        private string logicalName;
-        public string LogicalName
-        {
-            get { return logicalName; }
-            set { logicalName = value; }
-        }
-
-        private bool destroyed;
-        public bool Destroyed
-        {
-            get { return destroyed; }
-            set { destroyed = value; }
-        }
+        public string PhysicalName { get; }
+        public string LogicalName { get; set; }
+        public bool Destroyed { get; set; }
 
         public VssItemInfo(string physicalName, string logicalName)
         {
-            this.physicalName = physicalName;
-            this.logicalName = logicalName;
+            PhysicalName = physicalName;
+            LogicalName = logicalName;
         }
     }
 
@@ -82,20 +66,10 @@ namespace Hpdi.Vss2Git
             }
         }
 
-        private bool isRoot;
-        public bool IsRoot
-        {
-            get { return isRoot; }
-            set { isRoot = value; }
-        }
+        public bool IsRoot { get; set; }
 
         // valid only for root paths; used to resolve project specifiers
-        private string originalVssPath;
-        public string OriginalVssPath
-        {
-            get { return originalVssPath; }
-            set { originalVssPath = value; }
-        }
+        public string OriginalVssPath { get; set; }
 
         public bool IsRooted
         {
@@ -106,7 +80,7 @@ namespace Hpdi.Vss2Git
                 {
                     project = project.parentInfo;
                 }
-                return project.isRoot;
+                return project.IsRoot;
             }
         }
 
@@ -274,12 +248,7 @@ namespace Hpdi.Vss2Git
             get { return projects; }
         }
 
-        private int version = 1;
-        public int Version
-        {
-            get { return version; }
-            set { version = value; }
-        }
+        public int Version { get; set; } = 1;
 
         public VssFileInfo(string physicalName, string logicalName)
             : base(physicalName, logicalName)
@@ -344,7 +313,7 @@ namespace Hpdi.Vss2Git
             {
                 return projectInfo.GetAllFiles();
             }
-            return null;
+            return projectInfo.GetAllFiles();
         }
 
         public IEnumerable<VssProjectInfo> GetAllProjects(string project)
@@ -354,7 +323,7 @@ namespace Hpdi.Vss2Git
             {
                 return projectInfo.GetAllProjects();
             }
-            return null;
+            return projectInfo.GetAllProjects();
         }
 
         public IEnumerable<string> GetFilePaths(string file, string underProject)
@@ -364,24 +333,21 @@ namespace Hpdi.Vss2Git
             if (fileInfos.TryGetValue(file, out fileInfo))
             {
                 VssProjectInfo underProjectInfo = null;
-                if (underProject != null)
+                if (underProject != null && 
+                    !projectInfos.TryGetValue(underProject, out underProjectInfo))
                 {
-                    if (!projectInfos.TryGetValue(underProject, out underProjectInfo))
-                    {
-                        return result;
-                    }
+                    return result;
                 }
-                foreach (var project in fileInfo.Projects)
+
+                foreach (var project in fileInfo.Projects.Where(
+                    project => underProjectInfo == null || project.IsSameOrSubproject(underProjectInfo)))
                 {
-                    if (underProjectInfo == null || project.IsSameOrSubproject(underProjectInfo))
+                    // ignore projects that are not rooted
+                    var projectPath = project.GetPath();
+                    if (projectPath != null)
                     {
-                        // ignore projects that are not rooted
-                        var projectPath = project.GetPath();
-                        if (projectPath != null)
-                        {
-                            var path = Path.Combine(projectPath, fileInfo.LogicalName);
-                            result.AddLast(path);
-                        }
+                        var path = Path.Combine(projectPath, fileInfo.LogicalName);
+                        result.AddLast(path);
                     }
                 }
             }

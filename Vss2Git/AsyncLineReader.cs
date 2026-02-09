@@ -41,7 +41,7 @@ namespace Hpdi.Vss2Git
         private int copyLimit;
 
         private readonly StringBuilder lineBuilder = new StringBuilder();
-        private int maxLineLength;
+        private readonly int maxLineLength;
 
         private bool readPending;
         private bool endOfFile;

@@ -19,7 +19,7 @@ namespace Hpdi.HashLib
     /// Interface for 16-bit hash functions.
     /// </summary>
     /// <author>Trevor Robinson</author>
-    public interface Hash16
+    public interface IHash16
     {
         ushort Compute(byte[] bytes);
         ushort Compute(byte[] bytes, int offset, int limit);
@@ -29,7 +29,7 @@ namespace Hpdi.HashLib
     /// Interface for 32-bit hash functions.
     /// </summary>
     /// <author>Trevor Robinson</author>
-    public interface Hash32
+    public interface IHash32
     {
         uint Compute(byte[] bytes);
         uint Compute(byte[] bytes, int offset, int limit);
@@ -39,11 +39,11 @@ namespace Hpdi.HashLib
     /// 16-bit hash function based on XORing the upper and lower words of a 32-bit hash.
     /// </summary>
     /// <author>Trevor Robinson</author>
-    public class XorHash32To16 : Hash16
+    public class XorHash32To16 : IHash16
     {
-        private readonly Hash32 hash32;
+        private readonly IHash32 hash32;
 
-        public XorHash32To16(Hash32 hash32)
+        public XorHash32To16(IHash32 hash32)
         {
             this.hash32 = hash32;
         }

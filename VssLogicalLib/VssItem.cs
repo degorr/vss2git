@@ -127,7 +127,7 @@ namespace Hpdi.VssLogicalLib
             }
         }
 
-        internal VssItem(VssDatabase database, VssItemName itemName, string physicalPath)
+        private protected VssItem(VssDatabase database, VssItemName itemName, string physicalPath)
         {
             this.database = database;
             this.itemName = itemName;
@@ -175,7 +175,7 @@ namespace Hpdi.VssLogicalLib
             }
         }
 
-        private class VssRevisionEnumerator<ItemT, RevisionT> : IEnumerator<RevisionT>
+        private sealed class VssRevisionEnumerator<ItemT, RevisionT> : IEnumerator<RevisionT>
             where ItemT : VssItem
             where RevisionT : VssRevision
         {

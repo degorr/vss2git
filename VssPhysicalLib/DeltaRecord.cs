@@ -36,7 +36,7 @@ namespace Hpdi.VssPhysicalLib
         {
             base.Read(reader, header);
 
-            for (; ; )
+            while (true)
             {
                 DeltaOperation operation = new DeltaOperation();
                 operation.Read(reader);

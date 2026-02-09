@@ -19,7 +19,7 @@ namespace Hpdi.HashLib
     /// 32-bit CRC hash function.
     /// </summary>
     /// <author>Trevor Robinson</author>
-    public class Crc32 : Hash32
+    public class Crc32 : IHash32
     {
         // Commonly used polynomials.
         public const uint IEEE = 0xEDB88320; // reversed
@@ -50,9 +50,9 @@ namespace Hpdi.HashLib
             var crc = initial;
             while (offset < limit)
             {
-                crc = (uint)((crc >> 8) ^ table[(byte)(crc ^ bytes[offset++])]);
+                crc = (crc >> 8) ^ table[(byte)(crc ^ bytes[offset++])];
             }
-            return (uint)(crc ^ final);
+            return crc ^ final;
         }
 
         protected static uint[] GenerateTable(uint poly)

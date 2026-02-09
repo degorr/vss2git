@@ -87,7 +87,7 @@ namespace Hpdi.VssLogicalLib
             get { return name; }
         }
 
-        public VssNamedAction(VssItemName name)
+        protected VssNamedAction(VssItemName name)
         {
             this.name = name;
         }

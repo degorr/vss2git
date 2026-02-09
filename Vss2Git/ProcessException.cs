@@ -21,7 +21,7 @@ namespace Hpdi.Vss2Git
     /// Exception thrown while executing an external process.
     /// </summary>
     /// <author>Trevor Robinson</author>
-    class ProcessException : Exception
+    public class ProcessException : Exception
     {
         private readonly string executable;
         public string Executable

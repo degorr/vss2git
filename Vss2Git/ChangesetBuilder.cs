@@ -36,20 +36,9 @@ namespace Hpdi.Vss2Git
             get { return changesets; }
         }
 
-        private TimeSpan anyCommentThreshold = TimeSpan.FromSeconds(30);
-        public TimeSpan AnyCommentThreshold
-        {
-            get { return anyCommentThreshold; }
-            set { anyCommentThreshold = value; }
-        }
+        public TimeSpan AnyCommentThreshold { get; set; } = TimeSpan.FromSeconds(30);
 
-
-        private TimeSpan sameCommentThreshold = TimeSpan.FromMinutes(10);
-        public TimeSpan SameCommentThreshold
-        {
-            get { return sameCommentThreshold; }
-            set { sameCommentThreshold = value; }
-        }
+        public TimeSpan SameCommentThreshold { get; set; } = TimeSpan.FromMinutes(10);
 
         public ChangesetBuilder(WorkQueue workQueue, Logger logger, RevisionAnalyzer revisionAnalyzer)
             : base(workQueue, logger)
@@ -68,7 +57,6 @@ namespace Hpdi.Vss2Git
                 var pendingChangesByUser = new Dictionary<string, Changeset>();
                 foreach (var dateEntry in revisionAnalyzer.SortedRevisions)
                 {
-                    var dateTime = dateEntry.Key;
                     foreach (Revision revision in dateEntry.Value)
                     {
                         // determine target of project revisions
@@ -80,7 +68,7 @@ namespace Hpdi.Vss2Git
                             targetFile = namedAction.Name.PhysicalName;
                         }
 
-                        // Create actions are only used to obtain initial item comments;
+                        // Create actions are only used to obtain initial item comments
                         // items are actually created when added to a project
                         var creating = (actionType == VssActionType.Create ||
                             (actionType == VssActionType.Branch && !revision.Item.IsProject));
@@ -102,12 +90,12 @@ namespace Hpdi.Vss2Git
                             // flush change if file conflict or past time threshold
                             var flush = false;
                             var timeDiff = revision.DateTime - change.DateTime;
-                            if (timeDiff > anyCommentThreshold)
+                            if (timeDiff > AnyCommentThreshold)
                             {
                                 if (HasSameComment(revision, change.Revisions.Last.Value))
                                 {
                                     string message;
-                                    if (timeDiff < sameCommentThreshold)
+                                    if (timeDiff < SameCommentThreshold)
                                     {
                                         message = "Using same-comment threshold";
                                     }
@@ -202,11 +190,11 @@ namespace Hpdi.Vss2Git
 
                 logger.WriteSectionSeparator();
                 logger.WriteLine("Found {0} changesets in {1:HH:mm:ss}",
-                    changesets.Count, new DateTime(stopwatch.ElapsedTicks));
+                    changesets.Count, new DateTime(stopwatch.ElapsedTicks, DateTimeKind.Unspecified));
             });
         }
 
-        private bool HasSameComment(Revision rev1, Revision rev2)
+        private static bool HasSameComment(Revision rev1, Revision rev2)
         {
             return !string.IsNullOrEmpty(rev1.Comment) && rev1.Comment == rev2.Comment;
         }

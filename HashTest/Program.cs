@@ -23,7 +23,7 @@ namespace Hpdi.HashTest
     /// Simple test program for CRC generation.
     /// </summary>
     /// <author>Trevor Robinson</author>
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {

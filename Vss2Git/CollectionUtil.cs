@@ -56,7 +56,7 @@ namespace Hpdi.Vss2Git
             }
         }
 
-        public delegate T TransformFunction<F, T>(F obj);
+        public delegate T TransformFunction<in F, out T>(F obj);
 
         public static IEnumerable<T> Transform<F, T>(IEnumerable<F> items, TransformFunction<F, T> func)
         {

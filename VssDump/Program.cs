@@ -27,7 +27,7 @@ namespace Hpdi.VssDump
     /// Dumps pretty much everything in the VSS database to the console.
     /// </summary>
     /// <author>Trevor Robinson</author>
-    class Program
+    static class Program
     {
         private const string Separator = "------------------------------------------------------------";
 

@@ -27,7 +27,7 @@ namespace Hpdi.Vss2Git
         protected readonly WorkQueue workQueue;
         protected readonly Logger logger;
 
-        public Worker(WorkQueue workQueue, Logger logger)
+        protected Worker(WorkQueue workQueue, Logger logger)
         {
             this.workQueue = workQueue;
             this.logger = logger;

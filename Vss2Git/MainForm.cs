@@ -151,7 +151,7 @@ namespace Hpdi.Vss2Git
         {
             statusLabel.Text = workQueue.LastStatus ?? "Idle";
             timeLabel.Text = string.Format("Elapsed: {0:HH:mm:ss}",
-                new DateTime(workQueue.ActiveTime.Ticks));
+                new DateTime(workQueue.ActiveTime.Ticks, DateTimeKind.Utc));
 
             if (revisionAnalyzer != null)
             {

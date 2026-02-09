@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 
 namespace Hpdi.Vss2Git
@@ -75,7 +76,7 @@ namespace Hpdi.Vss2Git
                     return result;
                 }
             }
-            return null;
+            return new List<Exception>();
         }
 
         public string GetStatus(object work)
@@ -170,7 +171,6 @@ namespace Hpdi.Vss2Git
             {
                 lastStatusWork = null;
                 lastStatus = null;
-
                 foreach (var entry in workStatuses)
                 {
                     if (!string.IsNullOrEmpty(entry.Value))

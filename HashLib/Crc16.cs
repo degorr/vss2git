@@ -19,7 +19,7 @@ namespace Hpdi.HashLib
     /// 16-bit CRC hash function.
     /// </summary>
     /// <author>Trevor Robinson</author>
-    public class Crc16 : Hash16
+    public class Crc16 : IHash16
     {
         // Commonly used polynomials.
         public const ushort IBM = 0xA001; // reversed
