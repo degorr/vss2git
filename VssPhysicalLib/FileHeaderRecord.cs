@@ -23,7 +23,7 @@ namespace Hpdi.VssPhysicalLib
     /// </summary>
     /// <author>Trevor Robinson</author>
     [Flags]
-    public enum FileFlags
+    public enum FileStates
     {
         None,
         Locked = 0x01,
@@ -39,7 +39,7 @@ namespace Hpdi.VssPhysicalLib
     /// <author>Trevor Robinson</author>
     public class FileHeaderRecord : ItemHeaderRecord
     {
-        FileFlags flags;
+        FileStates flags;
         string branchFile;
         int branchOffset;
         int projectOffset;
@@ -52,7 +52,7 @@ namespace Hpdi.VssPhysicalLib
         DateTime modificationDateTime;
         DateTime creationDateTime;
 
-        public FileFlags Flags { get { return flags; } }
+        public FileStates Flags { get { return flags; } }
         public string BranchFile { get { return branchFile; } }
         public int BranchOffset { get { return branchOffset; } }
         public int ProjectOffset { get { return projectOffset; } }
@@ -74,7 +74,7 @@ namespace Hpdi.VssPhysicalLib
         {
             base.Read(reader, header);
 
-            flags = (FileFlags)reader.ReadInt16();
+            flags = (FileStates)reader.ReadInt16();
             branchFile = reader.ReadString(8);
             reader.Skip(2); // reserved; always 0
             branchOffset = reader.ReadInt32();

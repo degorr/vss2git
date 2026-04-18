@@ -137,8 +137,7 @@ namespace Hpdi.VssPhysicalLib
         public ICollection<string> GetProjects()
         {
             var result = new LinkedList<string>();
-            var fileHeader = header as FileHeaderRecord;
-            if (fileHeader != null)
+            if (header is FileHeaderRecord fileHeader)
             {
                 var record = new ProjectRecord();
                 var offset = fileHeader.ProjectOffset;
@@ -225,14 +224,6 @@ namespace Hpdi.VssPhysicalLib
                 case Action.RestoreFile:
                     record = new ArchiveRevisionRecord();
                     break;
-                case Action.CreateProject:
-                case Action.AddProject:
-                case Action.AddFile:
-                case Action.DeleteProject:
-                case Action.DeleteFile:
-                case Action.RecoverProject:
-                case Action.RecoverFile:
-                case Action.CreateFile:
                 default:
                     record = new CommonRevisionRecord();
                     break;

@@ -19,7 +19,7 @@ namespace Hpdi.VssPhysicalLib
     /// Structure used to store a VSS project or file name.
     /// </summary>
     /// <author>Trevor Robinson</author>
-    public struct VssName
+    public readonly struct VssName
     {
         private readonly short flags;
         public bool IsProject

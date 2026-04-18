@@ -132,11 +132,7 @@ namespace Hpdi.Vss2Git
 
         protected virtual void OnDataReceived()
         {
-            EventHandler handler = DataReceived;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            DataReceived?.Invoke(this, EventArgs.Empty);
         }
 
         // Assumes buffer lock is held or called from constructor.

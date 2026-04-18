@@ -28,27 +28,27 @@ namespace Hpdi.VssLogicalLib
     {
         public bool IsLocked
         {
-            get { return (Header.Flags & FileFlags.Locked) != 0; }
+            get { return (Header.Flags & FileStates.Locked) != 0; }
         }
 
         public bool IsBinary
         {
-            get { return (Header.Flags & FileFlags.Binary) != 0; }
+            get { return (Header.Flags & FileStates.Binary) != 0; }
         }
 
         public bool IsLatestOnly
         {
-            get { return (Header.Flags & FileFlags.LatestOnly) != 0; }
+            get { return (Header.Flags & FileStates.LatestOnly) != 0; }
         }
 
         public bool IsShared
         {
-            get { return (Header.Flags & FileFlags.Shared) != 0; }
+            get { return (Header.Flags & FileStates.Shared) != 0; }
         }
 
         public bool IsCheckedOut
         {
-            get { return (Header.Flags & FileFlags.CheckedOut) != 0; }
+            get { return (Header.Flags & FileStates.CheckedOut) != 0; }
         }
 
         public uint Crc

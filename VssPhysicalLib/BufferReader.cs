@@ -59,7 +59,7 @@ namespace Hpdi.VssPhysicalLib
             return sum;
         }
 
-        private static IHash16 crc16 = new XorHash32To16(new Crc32(Crc32.IEEE));
+        private static readonly IHash16 crc16 = new XorHash32To16(new Crc32(Crc32.IEEE));
 
         public ushort Crc16()
         {

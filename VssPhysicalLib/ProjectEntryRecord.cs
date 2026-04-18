@@ -23,7 +23,7 @@ namespace Hpdi.VssPhysicalLib
     /// </summary>
     /// <author>Trevor Robinson</author>
     [Flags]
-    public enum ProjectEntryFlags
+    public enum ProjectEntryStates
     {
         None,
         Deleted = 0x01,
@@ -41,14 +41,14 @@ namespace Hpdi.VssPhysicalLib
         public const string SIGNATURE = "JP";
 
         protected ItemType itemType;
-        protected ProjectEntryFlags flags;
+        protected ProjectEntryStates flags;
         protected VssName name;
         protected int pinnedVersion;
         protected string physical;
 
         public override string Signature { get { return SIGNATURE; } }
         public ItemType ItemType { get { return itemType; } }
-        public ProjectEntryFlags Flags { get { return flags; } }
+        public ProjectEntryStates Flags { get { return flags; } }
         public VssName Name { get { return name; } }
         public int PinnedVersion { get { return pinnedVersion; } }
         public string Physical { get { return physical; } }
@@ -58,7 +58,7 @@ namespace Hpdi.VssPhysicalLib
             base.Read(reader, header);
 
             itemType = (ItemType)reader.ReadInt16();
-            flags = (ProjectEntryFlags)reader.ReadInt16();
+            flags = (ProjectEntryStates)reader.ReadInt16();
             name = reader.ReadName();
             pinnedVersion = reader.ReadInt16();
             physical = reader.ReadString(10);

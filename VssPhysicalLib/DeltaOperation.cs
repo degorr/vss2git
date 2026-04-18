@@ -48,20 +48,22 @@ namespace Hpdi.VssPhysicalLib
 
         public static DeltaOperation WriteLog(byte[] data, int offset, int length)
         {
-            var result = new DeltaOperation();
-            result.command = DeltaCommand.WriteLog;
-            result.length = length;
-            result.data = new ArraySegment<byte>(data, offset, length);
-            return result;
+            return new DeltaOperation
+            {
+                command = DeltaCommand.WriteLog,
+                length = length,
+                data = new ArraySegment<byte>(data, offset, length)
+            };
         }
 
         public static DeltaOperation WriteSuccessor(int offset, int length)
         {
-            var result = new DeltaOperation();
-            result.command = DeltaCommand.WriteSuccessor;
-            result.offset = offset;
-            result.length = length;
-            return result;
+            return new DeltaOperation
+            {
+                command = DeltaCommand.WriteSuccessor,
+                offset = offset,
+                length = length
+            };
         }
 
         public void Read(BufferReader reader)

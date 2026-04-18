@@ -25,7 +25,7 @@ namespace Hpdi.VssPhysicalLib
     /// Simulates stream-like traversal over a set of revision delta operations.
     /// </summary>
     /// <author>Trevor Robinson</author>
-    class DeltaSimulator : IDisposable
+    sealed class DeltaSimulator : IDisposable
     {
         private readonly IEnumerable<DeltaOperation> operations;
         private IEnumerator<DeltaOperation> enumerator;
@@ -51,11 +51,8 @@ namespace Hpdi.VssPhysicalLib
 
         public void Dispose()
         {
-            if (enumerator != null)
-            {
-                enumerator.Dispose();
-                enumerator = null;
-            }
+            enumerator?.Dispose();
+            enumerator = null;
         }
 
         public void Seek(int offset)
@@ -118,10 +115,7 @@ namespace Hpdi.VssPhysicalLib
 
         private void Reset()
         {
-            if (enumerator != null)
-            {
-                enumerator.Dispose();
-            }
+            enumerator?.Dispose();
             enumerator = operations.GetEnumerator();
             eof = !enumerator.MoveNext();
             operationOffset = 0;

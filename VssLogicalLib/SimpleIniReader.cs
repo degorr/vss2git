@@ -72,8 +72,7 @@ namespace Hpdi.VssLogicalLib
 
         public string GetValue(string key, string defaultValue)
         {
-            string result;
-            return entries.TryGetValue(key, out result) ? result : defaultValue;
+            return entries.TryGetValue(key, out string result) ? result : defaultValue;
         }
     }
 }

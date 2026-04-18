@@ -42,8 +42,7 @@ namespace Hpdi.VssLogicalLib
                 IEnumerable<DeltaOperation> deltaOps = null;
                 while (lastRev != null && lastRev.Revision > this.Version)
                 {
-                    var branchRev = lastRev as BranchRevisionRecord;
-                    if (branchRev != null)
+                    if (lastRev is BranchRevisionRecord branchRev)
                     {
                         var branchRevId = branchRev.Revision;
                         var itemPath = item.Database.GetDataPath(branchRev.BranchFile);

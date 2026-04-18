@@ -24,16 +24,11 @@ namespace Hpdi.VssPhysicalLib
     public abstract class VssRecord
     {
         public abstract string Signature { get; }
-
-        protected RecordHeader header;
-        public RecordHeader Header
-        {
-            get { return header; }
-        }
+        public RecordHeader Header { get; private set; }
 
         public virtual void Read(BufferReader reader, RecordHeader header)
         {
-            this.header = header;
+            Header = header;
         }
 
         public abstract void Dump(TextWriter writer);

@@ -61,7 +61,7 @@ namespace Hpdi.VssLogicalLib
 
         public string Comment
         {
-            get { return comment != null ? comment.Comment : null; }
+            get { return comment?.Comment; }
         }
 
         private protected VssRevision(VssItem item, RevisionRecord revision, CommentRecord comment)
